@@ -1,0 +1,40 @@
+asyncapi: 2.6.0
+info:
+  title: Query Repository DatastreamMetric
+  version: 0.1.0
+servers:
+  production:
+    url: 127.0.0.1:5678
+    protocol: amqp
+    description: Query Repository.
+    bindings:
+      amqp:
+        exchange:
+          name: query_repository
+channels:
+  MetricQueue:
+    subscribe:
+      message:
+        $ref: '#/components/messages/MetricMessage'
+components:
+  messages:
+    MetricMessage:
+      payload:
+        type: object
+        $id: MetricPayload
+        properties:
+          name:
+            type: string
+          unit:
+            type: string
+          format:
+            type: string
+          value:
+            type: number
+            format: double
+          datastreamId:
+            type: integer
+          timestamp:
+            type: string
+            format: date-time
+

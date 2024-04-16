@@ -1,0 +1,39 @@
+<as-split direction="horizontal">
+    <as-split-area [size]="40">
+
+
+        <div style="text-align: center; margin-top: 20px">
+            <button mat-raised-button color="primary" (click)="executeQuery()">Execute!</button>
+
+
+            <ngx-codemirror #sqleditor
+                            [(ngModel)]="statement"
+                            [options]="{
+    lineNumbers: true,
+    theme: 'material',
+    mode: 'sql',
+    fullScreen:false,
+    EditorConfiguration:true,
+    viewportMargin: Infinity,
+    }"
+            ></ngx-codemirror>
+
+
+        </div>
+
+    </as-split-area>
+
+    <as-split-area [size]="60">
+        <div style="text-align: center;">
+            <!-- Use mat-raised-button for a raised button style -->
+            <button mat-raised-button color="primary" (click)="analyze()">Analyze!</button>
+        </div>
+
+        <div *ngFor="let tab of tabs | keyvalue" (click)="onTabClick(tab.key)">
+            {{ tab.key }}
+        </div>
+
+        <app-code-mirror-fullscreen #jsoneditor [content]="executionplan"></app-code-mirror-fullscreen>
+
+    </as-split-area>
+</as-split>

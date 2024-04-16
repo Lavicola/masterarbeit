@@ -1,0 +1,210 @@
+openapi: 3.1.0
+info:
+  title: Data Mart
+  version: 1.0.0
+servers:
+  - description: Local server
+    url: 'http://localhost:8080/api'
+paths:
+  /query:
+    get:
+      tags:
+        - query
+      parameters:
+        - description: The start Date of the Queries to search for
+          in: query
+          name: startDate
+          required: false
+          schema:
+            format: date-time
+            type: string
+            default: '2020-11-01T00:04:12.462465539'
+          style: form
+        - description: The end Date of the Queries to search for
+          in: query
+          name: endDate
+          required: false
+          schema:
+            format: date-time
+            type: string
+            default: '#{T(java.time.LocalDateTime).now()}'
+          style: form
+        - name: page
+          in: query
+          description: The page number (zero-based index) for paginated results.
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+          style: form
+        - name: size
+          in: query
+          description: The number of items per page.
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 40
+          style: form
+        - name: sort
+          in: query
+          description: Sorting criteria for the results.
+          required: false
+          schema:
+            type: string
+            default: desc
+          style: form
+        - description: List of Tablenames a Query shall own
+          in: query
+          name: tablenames
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryDTOPage'
+          description: Successful response
+      summary: Get queries
+      x-accepts: application/json
+    post:
+      tags:
+        - query
+      summary: redirect a new resource to  AMQP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryDTO'
+      responses:
+        '200':
+          description: Successful Creation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryDTO'
+  '/executionplan/{hash}/steps':
+    get:
+      tags:
+        - query
+      parameters:
+        - description: Get steps of Executionplan
+          in: path
+          name: hash
+          required: true
+          schema:
+            type: string
+          style: simple
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExecutionplanStep'
+          description: Successful response
+      summary: Get Executionplan and Steps
+      x-accepts: application/json
+  /tablereferences:
+    get:
+      tags:
+        - query
+      summary: Retrieve all table references
+      description: Retrieve all table references
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+components:
+  schemas:
+    QueryDTO:
+      example:
+        statementHash: HASH(SELECT * FROM)
+        executionplanHash: HASH(costplan)
+        statement: SELECT * FROM
+        timestamp: 31536000
+      properties:
+        statement:
+          description: Statement of an query
+          example: SELECT * FROM
+          type: string
+        statementHash:
+          description: Statementhash of an query
+          example: HASH(SELECT * FROM)
+          type: string
+        executionplanHash:
+          description: Hash of a Costplan
+          example: HASH(costplan)
+          type: string
+        timestamp:
+          description: Incoming Time of the Query
+          example: 31536000
+          format: date
+          type: string
+        executionplans:
+          type: array
+          items:
+            $ref: '#/components/schemas/Executionplan'
+      title: QueryDTO
+    Executionplan:
+      properties:
+        executionplan:
+          description: execution plan as JSON
+          type: string
+        hash:
+          description: hashed execution plan
+          example: 'HASH({...})'
+          type: string
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExecutionplanStep'
+      title: Executionplan
+    ExecutionplanStep:
+      properties:
+        step:
+          description: number of the step
+          example: 1
+          type: integer
+        deviceName:
+          description: name of the Device which executed this step
+          example: fpga1
+          type: string
+        executionstep:
+          description: json executionplan step
+          example: '{}'
+          type: string
+        costmodel:
+          description: json of the costmodel for this certain step
+          example: '{}'
+          type: string
+        capabilities:
+          description: json of the capabilities for this certain step
+          example: '{}'
+          type: string
+      title: ExecutionplanStep
+    QueryDTOPage:
+      properties:
+        queries:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryDTO'
+        totalPages:
+          type: integer
+
+

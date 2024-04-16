@@ -1,0 +1,29 @@
+<div style="text-align: center;">
+    <!-- Dropdown menu -->
+    <mat-form-field>
+        <mat-label>Select Metric</mat-label>
+        <mat-select [(value)]="selectedMetric" (selectionChange)="updateChart(selectedMetric)">
+            <mat-option *ngFor="let name of metricNames" [value]="name">
+                {{ name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+
+    <!-- Line chart -->
+    <div style="width: 100%">
+    <ngx-charts-line-chart
+            [view]="view"
+            [results]="multi"
+            [xAxis]="xAxis"
+            [yAxis]="yAxis"
+            [legend]="legend"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxisLabel"
+            [yAxisLabel]="yAxisLabel"
+            [timeline]="true"
+            (select)="onSelect($event)"
+    ></ngx-charts-line-chart>
+</div>
+</div>

@@ -1,0 +1,243 @@
+openapi: 3.1.0
+info:
+  title: Query
+  version: 1.0.0
+servers:
+- description: Local server
+  url: http://localhost:8080/api
+paths:
+  /query:
+    get:
+      parameters:
+      - description: The start Date of the Queries to search for
+        explode: true
+        in: query
+        name: startDate
+        required: false
+        schema:
+          default: 2020-11-01T00:04:12.462465539
+          format: date-time
+          type: string
+        style: form
+      - description: The end Date of the Queries to search for
+        explode: true
+        in: query
+        name: endDate
+        required: false
+        schema:
+          default: "#{T(java.time.LocalDateTime).now()}"
+          format: date-time
+          type: string
+        style: form
+      - description: The page number (zero-based index) for paginated results.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 0
+          format: int32
+          type: integer
+        style: form
+      - description: The number of items per page.
+        explode: true
+        in: query
+        name: size
+        required: false
+        schema:
+          default: 40
+          format: int32
+          type: integer
+        style: form
+      - description: Sorting criteria for the results.
+        explode: true
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: desc
+          type: string
+        style: form
+      - description: List of Tablenames a Query shall own
+        explode: true
+        in: query
+        name: tablenames
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryDTOPage'
+          description: Successful response
+      summary: Get queries
+      tags:
+      - query
+      x-accepts: application/json
+      x-tags:
+      - tag: query
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryDTO'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryDTO'
+          description: Successful Creation
+      summary: redirect a new resource to  AMQP
+      tags:
+      - query
+      x-content-type: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: query
+  /executionplan/{hash}/steps:
+    get:
+      parameters:
+      - description: Get steps of Executionplan
+        explode: false
+        in: path
+        name: hash
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ExecutionplanStep'
+                type: array
+          description: Successful response
+      summary: Get Executionplan and Steps
+      tags:
+      - query
+      x-accepts: application/json
+      x-tags:
+      - tag: query
+  /tablereferences:
+    get:
+      description: Retrieve all table references
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: Successful response
+      summary: Retrieve all table references
+      tags:
+      - query
+      x-accepts: application/json
+      x-tags:
+      - tag: query
+components:
+  schemas:
+    QueryDTO:
+      example:
+        statementHash: HASH(SELECT * FROM)
+        executionplanHash: HASH(costplan)
+        statement: SELECT * FROM
+        timestamp: 31536000
+      properties:
+        statement:
+          description: Statement of an query
+          example: SELECT * FROM
+          type: string
+        statementHash:
+          description: Statementhash of an query
+          example: HASH(SELECT * FROM)
+          type: string
+        executionplanHash:
+          description: Hash of a Costplan
+          example: HASH(costplan)
+          type: string
+        timestamp:
+          description: Incoming Time of the Query
+          example: 31536000
+          format: date
+          type: string
+        executionplans:
+          items:
+            $ref: '#/components/schemas/Executionplan'
+          type: array
+      title: QueryDTO
+    Executionplan:
+      example:
+        executionplanHash: "HASH({...})"
+      properties:
+        executionplan:
+          description: execution plan as JSON
+          type: string
+        executionplanHash:
+          description: hashed execution plan
+          example: "HASH({...})"
+          type: string
+        steps:
+          items:
+            $ref: '#/components/schemas/ExecutionplanStep'
+          type: array
+      title: Executionplan
+    ExecutionplanStep:
+      example:
+        costmodel: "{}"
+        capabilities: "{}"
+        executionstep: "{}"
+        step: 1
+        deviceName: fpga1
+      properties:
+        step:
+          description: number of the step
+          example: 1
+          type: integer
+        deviceName:
+          description: name of the Device which executed this step
+          example: fpga1
+          type: string
+        executionstep:
+          description: json executionplan step
+          example: "{}"
+          type: string
+        costmodel:
+          description: json of the costmodel for this certain step
+          example: "{}"
+          type: string
+        capabilities:
+          description: json of the capabilities for this certain step
+          example: "{}"
+          type: string
+      title: ExecutionplanStep
+    QueryDTOPage:
+      example:
+        totalPages: 0
+        queries:
+        - statementHash: HASH(SELECT * FROM)
+          executionplanHash: HASH(costplan)
+          statement: SELECT * FROM
+          timestamp: 31536000
+        - statementHash: HASH(SELECT * FROM)
+          executionplanHash: HASH(costplan)
+          statement: SELECT * FROM
+          timestamp: 31536000
+      properties:
+        queries:
+          items:
+            $ref: '#/components/schemas/QueryDTO'
+          type: array
+        totalPages:
+          type: integer

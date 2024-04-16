@@ -1,0 +1,140 @@
+openapi: 3.0.0
+info:
+  title: DatastreamFeature API Module
+  version: 1.0.0
+servers:
+  - description: Local server
+    url: http://localhost:8080/api
+paths:
+  /datastream:
+    get:
+      tags:
+        - datastream
+      summary: Get all datastreams
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Datastream'
+    post:
+      tags:
+        - datastream
+      summary: Create a new datastream
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Datastream'
+      responses:
+        '200':
+          description: Datastream created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Datastream'
+  /datastream/{datastream_name}/metric:
+    get:
+      tags:
+        - datastream
+      operationId: getAllMetrics
+      summary: Get all metrics of a datastream without Measurements
+      description: Returns a list of all available metrics
+      parameters:
+        - name: datastream_name
+          in: path
+          required: true
+          description: Datastream name
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: All metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Metric'
+  /datastream/{datastream_name}/metric/{metric_name}:
+    get:
+      tags:
+        - datastream
+      summary: Get Datapoints of a specific metric
+      parameters:
+        - name: metric_name
+          in: path
+          required: true
+          description: name of the Metric
+          schema:
+            type: string
+        - name: datastream_name
+          in: path
+          required: true
+          description: name of the datastream
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Measurement'
+                type: array
+components:
+  schemas:
+    Datastream:
+      example:
+        id: 1
+        name: "Flight"
+        stream: ""
+      properties:
+        id:
+          description: id = number in database
+          type: integer
+        name:
+          description: Name of the Metric
+          type: string
+        stream:
+          description: Unit of the Metric
+          type: string
+    Metric:
+      example:
+        id: 1
+        name: "Selectivity"
+        unit: "km/h"
+      properties:
+        id:
+          description: id of Metric
+          example: 1
+          type: integer
+        name:
+          description: Name of the Metric
+          example: Selectivity
+          type: string
+        unit:
+          description: Unit of the Metric
+          example: km/h
+          type: string
+        mesurements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Measurement'
+    Measurement:
+      properties:
+        time:
+          description: "LocalDateTime when the Point was inserted"
+          format: date-time
+          type: string
+        value:
+          description: "Value of the Datapoint"
+          type: number
+          format: double
+

@@ -1,0 +1,27 @@
+<as-split direction="horizontal">
+    <as-split-area [size]="40">
+        <mat-form-field appearance="fill">
+            <mat-label style="color: black;">Step</mat-label>
+            <mat-select (selectionChange)="onStepChange($event)">
+                <mat-option *ngFor="let step of steps" [value]="step.step">{{ step.step }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-label>{{ steps.at(current_step)?.deviceName }}</mat-label>
+
+        <app-code-mirror-fullscreen #jsoneditorStep [content]="currentGeneric"></app-code-mirror-fullscreen>
+
+
+    </as-split-area>
+
+    <as-split-area [size]="60">
+        <mat-tab-group #tabGroup color="primary" (selectedIndexChange)="onTabChange($event)" (selectedTabChange)="onTabChange($event)">
+            <mat-tab label="Costmodel">
+            </mat-tab>
+            <mat-tab label="Capabilities">
+
+            </mat-tab>
+        </mat-tab-group>
+        <app-code-mirror-fullscreen #jsoneditorGeneric [content]="executionplan"></app-code-mirror-fullscreen>
+
+    </as-split-area>
+</as-split>

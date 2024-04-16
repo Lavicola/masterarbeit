@@ -1,0 +1,173 @@
+openapi: 3.0.0
+info:
+  title: Device
+  version: 1.0.0
+servers:
+  - description: Local server
+    url: http://localhost:8080/api
+paths:
+  /devices:
+    get:
+      tags:
+        - device
+      summary: Get all Devices
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceDTO'
+    post:
+      tags:
+        - device
+      summary: Create a new Device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceDTO'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceDTO'
+    put:
+      tags:
+        - device
+      summary: Update Device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceDTO'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceDTO'
+
+
+  /devices/{name}:
+    get:
+      tags:
+        - device
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: name of the Device
+          schema:
+            type: string
+      summary: Get one Device with the name
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceDTO'
+components:
+  schemas:
+    DeviceDTO:
+      type: object
+      properties:
+        name:
+          description: Device name
+          type: string
+          example: RPU1
+        ip:
+          type: string
+        ports:
+          description: List of ports connected to the device
+          type: array
+          items:
+            $ref: '#/components/schemas/DatastreamPort'
+        capabilities:
+          description: Capabilities of the device
+          type: array
+          items:
+            $ref: '#/components/schemas/RPUCapabilities'
+        costmodels:
+          description: Costmodells of the device
+          type: array
+          items:
+            $ref: '#/components/schemas/Costmodel'
+    RPUCapabilities:
+      type: object
+      properties:
+        capabilities:
+          description: json of the plan
+          type: string
+        version:
+          description: version of the plan
+          type: integer
+        start:
+          description: when the capability started to get used
+          format: date-time
+          type: string
+        end:
+          description: when the capability ended to get used
+          format: date-time
+          type: string
+
+    Costmodel:
+      type: object
+      properties:
+        costmodel:
+          description: json of the costmodel
+          type: string
+        version:
+          description: version of the costmodel
+          type: integer
+        start:
+          description: when the costmodel started to get used
+          format: date-time
+          type: string
+        end:
+          description: when the costmodel ended to get used
+          format: date-time
+          type: string
+    Datastream:
+      type: object
+      properties:
+        name:
+          description: Alias of the Datastream
+          type: string
+          example: Flightdatastream
+    DatastreamPort:
+      type: object
+      properties:
+        number:
+          description: port number
+          type: integer
+          example: 1
+        ip:
+          description: ip
+          type: string
+        internalip:
+          description: internalip
+          type: string
+        description:
+          type: string
+        datastreamName:
+          type: string
+          description: Name of connected Datastream to the Port
+          example: "Flighstream"
+
+
+
+
+
+
+
+
+

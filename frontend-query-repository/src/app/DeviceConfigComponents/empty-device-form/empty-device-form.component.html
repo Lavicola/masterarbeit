@@ -1,0 +1,21 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <mat-form-field>
+    <label>
+      Device Name:
+    </label>
+    <input matInput formControlName="name">
+  </mat-form-field>
+
+  <mat-form-field>
+    <label>
+      Ip:
+    </label>
+    <input matInput formControlName="ip">
+  </mat-form-field>
+  <div>
+
+  </div>
+
+
+  <button mat-raised-button type="submit">Send</button>
+</form>

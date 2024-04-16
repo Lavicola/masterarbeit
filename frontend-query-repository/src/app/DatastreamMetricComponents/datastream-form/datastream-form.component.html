@@ -1,0 +1,15 @@
+<form [formGroup]="myForm" (ngSubmit)="onSubmit(myForm)">
+  <div>
+    <mat-form-field>
+      <mat-label>Datastream Name:</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-label>Datastream</mat-label>
+    <br>
+    <input type="file" #filePicker (change)="onFilePicked($event)">
+  </div>
+  <br>
+  <button mat-raised-button color="primary" type="submit">Confirm</button>
+</form>

@@ -1,0 +1,35 @@
+
+
+
+
+<button (click)="AddDevice({})"> Add Device</button>
+    <div #test class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+        <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
+          <th mat-header-cell *matHeaderCellDef>
+            <div style="display: flex; align-items: center;">
+              <span mat-sort-header>{{column}}</span>
+            </div>
+          </th>
+          <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+        </ng-container>
+
+        <ng-container [matColumnDef]="'actions'">
+          <th mat-header-cell *matHeaderCellDef> Actions</th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngFor="let action of rowActions">
+              <button (click)="action.performAction(element) " mat-button
+                      color="primary">{{ action.buttonAsText }}</button>
+            </ng-container>
+          </td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+      </table>
+
+
+    </div>
+

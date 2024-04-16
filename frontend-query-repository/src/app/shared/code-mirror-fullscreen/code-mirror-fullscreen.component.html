@@ -1,0 +1,15 @@
+
+
+<ngx-codemirror #jsoneditor
+  [(ngModel)]="content"
+  [options]="{
+    lineNumbers: true,
+    theme: 'material',
+    mode: 'application/x-json',
+    fullScreen:false,
+    EditorConfiguration:true,
+    viewportMargin: Infinity,
+
+    extraKeys: { F11: setFullScreen, Esc: closeFullScreen }
+    }"
+></ngx-codemirror>
