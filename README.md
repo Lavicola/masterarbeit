@@ -9,21 +9,39 @@ Das Query Repository besteht aus drei Komponent:
 - DeviceConfiguration (Verwaltung der Geräte)
 - DatastreamMetric (Datenstrom und Metriken)
 
+
+### Architektur und Schnittstellen des Query repository
+
+#### Architektur
+![Query Repository als Modulith](https://github.com/Lavicola/masterarbeit/blob/master/Architektur/modulith.png)
+
+#### Schnittstellen
+
+##### Data Mart
+![Data Mart Schnittstellen](https://github.com/Lavicola/masterarbeit/blob/master/Architektur/dataMart.drawio.png)
+
+##### Device Configuration
+![Device Configuration Schnittstellen](https://github.com/Lavicola/masterarbeit/blob/master/Architektur/DeviceConfig.drawio.png)
+
+##### Datastream
+![Datastream Schnittstellen](https://github.com/Lavicola/masterarbeit/blob/master/Architektur/Datastream.drawio.png)
+
+
 #### Aufbau Des Query Repository
 Jede Komponent besitzt folgende Ordnerstruktur:
 - Controller
     - Abgesehen von den ...Impl Klassen wurden alle Klassen mittels OpenAPI generiert.
-- dto
+- Dto
     - Dieser Ordner besitzt alle Transferobjekte für das Frontend. Auch hier wurden die Objekte mittels OpenAPI erstellt. ACHTUNG: Manche Transferobjekte werden im Gradle Task gemappt, sodass das Modell im Query Repository genutzt wird.
-- models
+- Models
     - Enthält die ORM Modelle des Query Repository sowie häufig die Validierungslogik z.B. für das hinzufügen eines Kostenmodells.
 - Repository
     - die Repositoryklassen ermöglichen den Zugriff auf die unterschiedlichen Objekte.
 - Service
     - Die Service beinhalten die Logik. Hier werden z.B. bei der Data Mart die Datenbankabfragen und deren Ausführungspläne integriert. Zusätzlich beinhaltet die Klasse die unterschiedlichen Schnittstellen zum Nachrichtenbroker (RabbitMQ). Die Nachrichten werden versendet und empfangen.
-- openAPI
+- OpenAPI
     - In diesem Ordner befindet sich die Spezifikation für die Frontend Kommunikation und Transferobjekte
-- asyncAPI
+- AsyncAPI
     - In diesem Ordner befindet sich die Spezifikation der Nachrichten und Warteschlangen die das Query Repository versteht bzw. unterstützt.
 - Messages
     - In diesem Ordner sind die generierten Nachrichten(= Transferobjekte) für die Warteschlangen. 
